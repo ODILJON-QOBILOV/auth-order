@@ -1,10 +1,13 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from .models import User
 from .serializers import RegisterSerializer, LoginSerializer, RefreshTokenSerializer
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import generics
 
 
 class RegisterAPIView(APIView):
@@ -48,3 +51,10 @@ class RefreshTokenAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class GetUsersAPIView(APIView):
+    def get(self, request):
+        if request.user.username == 'admin':
+            users = User.objects.all()
+            user_data = [{"id": user.id,"username": user.username, "email": user.email} for user in users]
+            return Response(user_data)
+        return Response({"error": "You are not authorized as admin."}, status=403)

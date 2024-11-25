@@ -53,7 +53,7 @@ class RefreshTokenAPIView(APIView):
 
 class GetUsersAPIView(APIView):
     def get(self, request):
-        if request.user.username == 'admin':
+        if request.user.username == 'admin' or request.user.username == 'mars':
             users = User.objects.all()
             user_data = [{"id": user.id,"username": user.username, "email": user.email} for user in users]
             return Response(user_data)

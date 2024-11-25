@@ -1,5 +1,4 @@
 # SQLite Database
-db.sqlite3
 
 # Virtual Environment
 .venv/

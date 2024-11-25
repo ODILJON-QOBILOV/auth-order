@@ -1,0 +1,20 @@
+# SQLite Database
+db.sqlite3
+
+# Virtual Environment
+.venv/
+
+# PyCharm/IDEA Files
+.idea/
+
+# Python Compiled Files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Logs
+*.log
+
+# Environment Files
+.env

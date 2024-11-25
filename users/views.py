@@ -48,10 +48,3 @@ class RefreshTokenAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-class Test(APIView):
-    permission_classes = (IsAuthenticated, )
-    def get(self, request):
-        return Response({'you are welcome'})
-
-

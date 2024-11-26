@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
@@ -56,3 +57,14 @@ class GetUsersAPIView(APIView):
             user_data = [{"id": user.id,"username": user.username, "email": user.email} for user in users]
             return Response(user_data)
         return Response({"error": "You are not authorized as admin."}, status=403)
+
+class ProfileAPIView(APIView):
+    permission_classes = (IsAuthenticated, )
+    def get(self, request):
+        user = request.user
+        response = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email
+        }
+        return Response(response)

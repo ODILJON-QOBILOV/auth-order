@@ -117,3 +117,13 @@ class ProfileAPIView(APIView):
             "email": user.email
         }
         return Response(response)
+
+class RootAPIView(APIView):
+    def get(self, request):
+        response = {
+            "Registration page": "register/",
+            "Login page": "login/",
+            "Refresh token page": "token/refresh",
+            "Profile page": "profile/"
+        }
+        return Response(response)

@@ -1,8 +1,9 @@
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
-from .serializers import RegisterSerializer, LoginSerializer, RefreshTokenSerializer
+from .serializers import RegisterSerializer, LoginSerializer, RefreshTokenSerializer, UserProfileSerializer
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -107,16 +108,38 @@ class GetUsersAPIView(APIView):
             return Response(user_data)
         return Response({"error": "You are not authorized as admin."}, status=403)
 
-class ProfileAPIView(APIView):
-    permission_classes = (IsAuthenticated, )
+# class ProfileAPIView(APIView):
+#     permission_classes = (IsAuthenticated, )
+#     def get(self, request):
+#         user = request.user
+#         response = {
+#             "id": user.id,
+#             "username": user.username,
+#             "email": user.email
+#         }
+#         return Response(response)
+#     def post(self, request):
+
+
+class ProfileAPIView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserProfileSerializer
+
     def get(self, request):
+        # Return the current user's data
         user = request.user
-        response = {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email
-        }
-        return Response(response)
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        # Update the current user's bio and image
+        user = request.user
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class RootAPIView(APIView):
     def get(self, request):

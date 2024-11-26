@@ -38,3 +38,9 @@ class RefreshTokenSerializer(serializers.Serializer):
         except Exception as e:
             raise serializers.ValidationError("Invalid refresh token.")
         return attrs
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'bio', 'user_image']

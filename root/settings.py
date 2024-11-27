@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$k!kgm5t9x6d1s!c4@2lc0(v-s_#n&x@72+a2(crdc#62rvz+4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
+    'drf_spectacular',
 
     # apps
     'users',
@@ -75,6 +76,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'root.wsgi.application'
 
 AUTH_USER_MODEL = 'users.User'
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -150,5 +153,7 @@ SIMPLE_JWT = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Auth API',
-    'VERSION': '1.0.0'
+    'DESCRIPTION': 'API documentation for your project',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }

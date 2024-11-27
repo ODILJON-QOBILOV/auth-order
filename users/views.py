@@ -93,22 +93,22 @@ from drf_spectacular.utils import extend_schema, OpenApiExample
 
 
 # Register API View with an example request
-@extend_schema(
-    tags=["auth"],  # Grouping the endpoint under the 'auth' tag
-    request=RegisterSerializer,  # Link to the RegisterSerializer for schema generation
-    examples=[
-        OpenApiExample(
-            name="Example of Request",
-            value={
-                'username': 'Jhon',
-                'email': 'example@gmail.com',
-                'password': 'qwertyuiop'
-            },
-            description="Example of a user registration request"
-        )
-    ]
-)
 class RegisterAPIView(APIView):
+    @extend_schema(
+        tags=["auth"],  # Grouping the endpoint under the 'auth' tag
+        request=RegisterSerializer,  # Link to the RegisterSerializer for schema generation
+        examples=[
+            OpenApiExample(
+                name="Example of Request",
+                value={
+                    'username': 'Jhon',
+                    'email': 'example@gmail.com',
+                    'password': 'qwertyuiop'
+                },
+                description="Example of a user registration request"
+            )
+        ]
+    )
     # @extend_schema(tags=['auth'], request=OpenApiExample(name="Example of Request",value={
     #     'username': 'Jhon',
     #     'email': 'example@gmail.com',
@@ -126,21 +126,22 @@ class RegisterAPIView(APIView):
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@extend_schema(
-    tags=["auth"],  # Grouping the endpoint under the 'auth' tag
-    request=LoginSerializer,  # Link to the RegisterSerializer for schema generation
-    examples=[
-        OpenApiExample(
-            name="Example of Login Request",
-            value={
-                'username': 'Jhon',
-                'password': 'qwertyuiop'
-            },
-            description="Example of a user login request"
-        )
-    ]
-)
+
 class LoginAPIView(APIView):
+    @extend_schema(
+        tags=["auth"],  # Grouping the endpoint under the 'auth' tag
+        request=LoginSerializer,  # Link to the RegisterSerializer for schema generation
+        examples=[
+            OpenApiExample(
+                name="Example of Login Request",
+                value={
+                    'username': 'Jhon',
+                    'password': 'qwertyuiop'
+                },
+                description="Example of a user login request"
+            )
+        ]
+    )
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -158,20 +159,21 @@ class LoginAPIView(APIView):
             return Response({"error": "Invalid username or password."}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@extend_schema(
-    tags=["auth"],  # Grouping the endpoint under the 'auth' tag
-    request=RefreshTokenSerializer,  # Link to the RegisterSerializer for schema generation
-    examples=[
-        OpenApiExample(
-            name="Example of Refresh Access Token Request",
-            value={
-                'refresh': "asdfgtresdcvbnjytrdfbhjyw4567uythgfd"
-            },
-            description="Example of a user get another access token request"
-        )
-    ]
-)
+
 class RefreshTokenAPIView(APIView):
+    @extend_schema(
+        tags=["auth"],  # Grouping the endpoint under the 'auth' tag
+        request=RefreshTokenSerializer,  # Link to the RegisterSerializer for schema generation
+        examples=[
+            OpenApiExample(
+                name="Example of Refresh Access Token Request",
+                value={
+                    'refresh': "asdfgtresdcvbnjytrdfbhjyw4567uythgfd"
+                },
+                description="Example of a user get another access token request"
+            )
+        ]
+    )
     def post(self, request):
         serializer = RefreshTokenSerializer(data=request.data)
         if serializer.is_valid():
@@ -180,8 +182,9 @@ class RefreshTokenAPIView(APIView):
             }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@extend_schema(tags=['users'])
+
 class GetUsersAPIView(APIView):
+    @extend_schema(tags=['users'])
     def get(self, request):
         if request.user.username == 'admin' or request.user.username == 'mars':
             users = User.objects.all()
@@ -201,13 +204,14 @@ class GetUsersAPIView(APIView):
 #         return Response(response)
 #     def post(self, request):
 
-@extend_schema(
-    tags=["User Profile"],  # Grouping the endpoint under the 'auth' tag
-    request=UserProfileSerializer,  # Link to the RegisterSerializer for schema generation
-)
+
 class ProfileAPIView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = UserProfileSerializer
+    @extend_schema(
+        tags=["User Profile"],  # Grouping the endpoint under the 'auth' tag
+        request=UserProfileSerializer,  # Link to the RegisterSerializer for schema generation
+    )
     def get(self, request):
         # Return the current user's data
         user = request.user
@@ -223,23 +227,24 @@ class ProfileAPIView(GenericAPIView):
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@extend_schema(
-    tags=["User Profile"],  # Grouping the endpoint under the 'auth' tag
-    request=RefreshTokenSerializer,  # Link to the RegisterSerializer for schema generation
-    examples=[
-        OpenApiExample(
-            name="Example of Update Request",
-            value={
-                'bio': "here will be user's bio"
-            },
-            description="Example of a user's bio request"
-        )
-    ]
-)
+
 class ProfileUpdateAPIView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = UserProfileUpdateSerializer
 
+    @extend_schema(
+        tags=["User Profile"],  # Grouping the endpoint under the 'auth' tag
+        request=RefreshTokenSerializer,  # Link to the RegisterSerializer for schema generation
+        examples=[
+            OpenApiExample(
+                name="Example of Update Request",
+                value={
+                    'bio': "here will be user's bio"
+                },
+                description="Example of a user's bio request"
+            )
+        ]
+    )
     def post(self, request):
         user = request.user
         serializer = self.get_serializer(user, data=request.data, partial=True)

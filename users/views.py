@@ -59,11 +59,42 @@ from rest_framework import status
 #             "access_token": str(access)
 #         }, status=status.HTTP_202_ACCEPTED)
 
+# class RegisterAPIView(APIView):
+#     def post(self, request):
+#         serializer = RegisterSerializer(data=request.data)
+#         if serializer.is_valid():
+#             user = serializer.save()
+#             refresh = RefreshToken.for_user(user)
+#             return Response({
+#                 "user": serializer.data,
+#                 "access_token": str(refresh.access_token),
+#                 "refresh_token": str(refresh),
+#             }, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class LoginAPIView(APIView):
+#     def post(self, request):
+#         serializer = LoginSerializer(data=request.data)
+#         if serializer.is_valid():
+#             username = serializer.validated_data['username']
+#             password = serializer.validated_data['password']
+#             user = authenticate(username=username, password=password)
+#             if user:
+#                 refresh = RefreshToken.for_user(user)
+#                 return Response({
+#                     "access_token": str(refresh.access_token),
+#                     "refresh_token": str(refresh)
+#                 }, status=status.HTTP_200_OK)
+#             return Response({"error": "username or password isn't correct!"}, status=status.HTTP_401_UNAUTHORIZED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class RegisterAPIView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
+            user = serializer.save()  # Password will be hashed here
             refresh = RefreshToken.for_user(user)
             return Response({
                 "user": serializer.data,
@@ -81,12 +112,14 @@ class LoginAPIView(APIView):
             password = serializer.validated_data['password']
             user = authenticate(username=username, password=password)
             if user:
+                if not user.is_active:
+                    return Response({"error": "User account is inactive."}, status=status.HTTP_401_UNAUTHORIZED)
                 refresh = RefreshToken.for_user(user)
                 return Response({
                     "access_token": str(refresh.access_token),
                     "refresh_token": str(refresh),
                 }, status=status.HTTP_200_OK)
-            return Response({"error": "username or password isn't correct!"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"error": "Invalid username or password."}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #
@@ -104,7 +137,7 @@ class GetUsersAPIView(APIView):
     def get(self, request):
         if request.user.username == 'admin' or request.user.username == 'mars':
             users = User.objects.all()
-            user_data = [{"id": user.id,"username": user.username, "email": user.email} for user in users]
+            user_data = [{"id": user.id,"username": user.username, "email": user.email, "bio": user.bio} for user in users]
             return Response(user_data)
         return Response({"error": "You are not authorized as admin."}, status=403)
 

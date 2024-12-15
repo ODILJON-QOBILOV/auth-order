@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -21,3 +23,27 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class Order(models.Model):
+    class OrderTypes(models.TextChoices):
+        TODO = 'to do', 'To Do'
+        DOING = 'doing', 'Doing'
+        DONE = 'done', 'Done'
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.IntegerField()
+    status = models.CharField(max_length=10, choices=OrderTypes.choices, default=OrderTypes.TODO)
+    created_at = models.DateTimeField(auto_now_add=True)
+    price = models.IntegerField(blank=True)
+    customer_id = models.CharField(unique=True, blank=True, max_length=15)
+
+    def save(self, *args, **kwargs):
+        price = self.product.price
+        self.price = price * self.amount
+        if not self.customer_id:
+            self.customer_id = str(uuid.uuid4())[:15]
+        # super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.product.name}: {self.user}'

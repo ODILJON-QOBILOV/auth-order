@@ -3,9 +3,9 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import User
+from .models import User, Order
 from .serializers import RegisterSerializer, LoginSerializer, RefreshTokenSerializer, UserProfileSerializer, \
-    UserProfileUpdateSerializer, UserPutPatchSerializer, ChangePasswordSerializer
+    UserProfileUpdateSerializer, UserPutPatchSerializer, ChangePasswordSerializer, LastOrdersSerializer
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -183,8 +183,30 @@ class ChangePasswordAPIView(APIView):
         serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
-            # Save the new password if everything is valid
             serializer.save()
             return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LastOrdersAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+    @extend_schema(tags=['orders'])
+
+    def get(self, request):
+        orders = Order.objects.all()
+        serializer = LastOrdersSerializer(orders, many=True)
+        return Response(serializer.data)
+
+class RecentOrdersAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+    @extend_schema(tags=['orders'])
+
+    def get(self, request):
+        orders = Order.objects.all()
+        serializer = LastOrdersSerializer(orders, many=True)
+        response = {
+            "date": serializer.data["created_at"],
+            "username": serializer.data["user.username"],
+            "price": serializer.data["price"],
+        }
+        return Response(response)

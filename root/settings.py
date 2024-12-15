@@ -154,7 +154,6 @@ SIMPLE_JWT = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Auth API',
-    'DESCRIPTION': 'API documentation for your project',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }

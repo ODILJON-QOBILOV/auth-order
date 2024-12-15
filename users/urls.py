@@ -1,7 +1,7 @@
 from django.urls import path
 
 from users.views import RefreshTokenAPIView, GetUsersAPIView, ProfileAPIView, RegisterAPIView, LoginAPIView, \
-    RootAPIView, ProfileUpdateAPIView, ProfilePutAPIView, ChangePasswordAPIView
+    RootAPIView, ProfileUpdateAPIView, ProfilePutAPIView, ChangePasswordAPIView, LastOrdersAPIView, RecentOrdersAPIView
 
 urlpatterns = [
     path('', RootAPIView.as_view()),
@@ -13,4 +13,6 @@ urlpatterns = [
     path('profile/update/', ProfileUpdateAPIView.as_view()),
     path('profile/put/', ProfilePutAPIView.as_view()),
     path('change-password/', ChangePasswordAPIView.as_view()),
+    path('last-orders/', LastOrdersAPIView.as_view()),
+    path('recent-orders/', RecentOrdersAPIView.as_view()),
 ]

@@ -2,7 +2,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from users.models import User
+from users.models import User, Order
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -63,18 +64,13 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         fields = ['current_password', 'new_password']
 
     def validate(self, attrs):
-        """
-        Custom validation to check if the current password matches
-        and if the new password is valid.
-        """
-        user = self.context['request'].user  # Get the logged-in user
+        user = self.context['request'].user
 
         # Verify the current password
         current_password = attrs.get('current_password')
         if not user.check_password(current_password):
             raise ValidationError("Current password is incorrect.")
 
-        # You can add additional validation for the new password here (optional)
         new_password = attrs.get('new_password')
         if current_password == new_password:
             raise ValidationError("New password cannot be the same as the current password.")
@@ -82,10 +78,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         return attrs
 
     def save(self):
-        """
-        Save the new password after validating the current password.
-        """
-        user = self.context['request'].user  # Get the logged-in user
+        user = self.context['request'].user
         new_password = self.validated_data['new_password']
 
         # Update the user's password
@@ -95,3 +88,8 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         return user
 
 
+
+class LastOrdersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'

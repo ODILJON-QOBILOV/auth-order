@@ -93,3 +93,10 @@ class LastOrdersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
+
+class RecentOrdersSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
+    product_name = serializers.CharField(source='product.name')
+    class Meta:
+        model = Order
+        fields = ('created_at', 'price', 'username', 'product_name')

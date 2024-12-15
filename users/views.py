@@ -5,7 +5,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User, Order
 from .serializers import RegisterSerializer, LoginSerializer, RefreshTokenSerializer, UserProfileSerializer, \
-    UserProfileUpdateSerializer, UserPutPatchSerializer, ChangePasswordSerializer, LastOrdersSerializer
+    UserProfileUpdateSerializer, UserPutPatchSerializer, ChangePasswordSerializer, LastOrdersSerializer, \
+    RecentOrdersSerializer
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -197,16 +198,22 @@ class LastOrdersAPIView(APIView):
         serializer = LastOrdersSerializer(orders, many=True)
         return Response(serializer.data)
 
+    @extend_schema(tags=['orders'], request=LastOrdersSerializer)
+    def post(self, request):
+        serializer = LastOrdersSerializer(data=request.data, many=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class RecentOrdersAPIView(APIView):
     permission_classes = (IsAuthenticated,)
     @extend_schema(tags=['orders'])
 
     def get(self, request):
         orders = Order.objects.all()
-        serializer = LastOrdersSerializer(orders, many=True)
-        response = {
-            "date": serializer.data["created_at"],
-            "username": serializer.data["user.username"],
-            "price": serializer.data["price"],
-        }
-        return Response(response)
+        serializer = RecentOrdersSerializer(orders, many=True)
+        return Response(serializer.data)

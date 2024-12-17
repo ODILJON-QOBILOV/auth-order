@@ -1,12 +1,13 @@
+from django.db.models import Sum
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import User, Order
+from .models import User, Order, Product
 from .serializers import RegisterSerializer, LoginSerializer, RefreshTokenSerializer, UserProfileSerializer, \
     UserProfileUpdateSerializer, UserPutPatchSerializer, ChangePasswordSerializer, LastOrdersSerializer, \
-    RecentOrdersSerializer
+    RecentOrdersSerializer, TopProductSerializer
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -216,4 +217,15 @@ class RecentOrdersAPIView(APIView):
     def get(self, request):
         orders = Order.objects.all()
         serializer = RecentOrdersSerializer(orders, many=True)
+        return Response(serializer.data)
+
+
+class TopSoldProductsAPIView(APIView):
+    def get(self, request):
+        top_products = (
+            Product.objects
+            .annotate(total_sold=Sum('order__amount'))
+            .order_by('-total_sold')[:3]
+        )
+        serializer = TopProductSerializer(top_products, many=True)
         return Response(serializer.data)

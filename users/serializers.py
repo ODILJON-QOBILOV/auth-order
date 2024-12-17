@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from users.models import User, Order
+from users.models import User, Order, Product
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -100,3 +100,10 @@ class RecentOrdersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ('created_at', 'price', 'username', 'product_name')
+
+class TopProductSerializer(serializers.ModelSerializer):
+    total_sold = serializers.IntegerField()
+
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'price', 'total_sold']

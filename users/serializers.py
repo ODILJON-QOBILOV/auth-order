@@ -42,7 +42,7 @@ class RefreshTokenSerializer(serializers.Serializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'bio', 'user_image']
+        fields = ['id', 'username', 'email', 'bio', 'user_image', 'statistics']
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:

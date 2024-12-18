@@ -1,4 +1,5 @@
 import uuid
+from random import random, randint
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -9,9 +10,16 @@ class User(AbstractUser):
     class UserTypes(models.TextChoices):
         User = 'user', 'User'
         Manager = 'manager', 'Manager'
+
     user_image = models.ImageField(upload_to='users/photos/', blank=True, null=True)
     bio = models.CharField(max_length=355, blank=True, null=True)
     role = models.CharField(max_length=25, choices=UserTypes.choices, default=UserTypes.User)
+    statistics = models.TextField(blank=True)
+
+    def save(self, *args, **kwargs):
+        self.statistics = [randint(200, 700) for _ in range(7)]
+        super().save(*args, **kwargs)
+
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
@@ -19,7 +27,8 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    
+
+
     def __str__(self):
         return self.name
 
@@ -36,6 +45,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     price = models.IntegerField(blank=True)
     customer_id = models.CharField(unique=True, blank=True, max_length=15)
+    statistics = models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
         price = self.product.price

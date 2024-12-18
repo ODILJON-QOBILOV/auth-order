@@ -221,6 +221,7 @@ class RecentOrdersAPIView(APIView):
 
 
 class TopSoldProductsAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request):
         top_products = (
             Product.objects
@@ -229,3 +230,10 @@ class TopSoldProductsAPIView(APIView):
         )
         serializer = TopProductSerializer(top_products, many=True)
         return Response(serializer.data)
+
+class BarChartGetAPIView(APIView):
+    def get(self, request):
+        user = request.user
+        db_user = User.objects.get(id=user.id)
+        return Response({"data": db_user.statistics})
+        # return Response({"message": "you are not authorized"})

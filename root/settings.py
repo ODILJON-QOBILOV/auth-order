@@ -126,6 +126,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://auth-order-production.up.railway.app"
+]
+
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 

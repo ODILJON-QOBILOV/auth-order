@@ -193,11 +193,20 @@ class ChangePasswordAPIView(APIView):
 class LastOrdersAPIView(APIView):
     permission_classes = (IsAuthenticated,)
     @extend_schema(tags=['orders'])
-
     def get(self, request):
+        # Fetch all orders
         orders = Order.objects.all()
-        serializer = LastOrdersSerializer(orders, many=True)
-        return Response(serializer.data)
+
+        response = [
+            {
+                "customer_id": order.customer_id,
+                "product_name": order.product.name,
+                "date": order.created_at.strftime("%d/%m"),
+                "status": order.status
+            }
+            for order in orders
+        ]
+        return Response(response, status=status.HTTP_200_OK)
 
     @extend_schema(tags=['orders'], request=LastOrdersSerializer)
     def post(self, request):
@@ -232,6 +241,7 @@ class TopSoldProductsAPIView(APIView):
         return Response(serializer.data)
 
 class BarChartGetAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request):
         user = request.user
         db_user = User.objects.get(id=user.id)

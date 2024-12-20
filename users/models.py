@@ -45,7 +45,6 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     price = models.IntegerField(blank=True)
     customer_id = models.CharField(unique=True, blank=True, max_length=15)
-    statistics = models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
         price = self.product.price

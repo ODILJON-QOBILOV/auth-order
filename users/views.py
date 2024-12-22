@@ -226,7 +226,17 @@ class RecentOrdersAPIView(APIView):
     def get(self, request):
         orders = Order.objects.all()
         serializer = RecentOrdersSerializer(orders, many=True)
-        return Response(serializer.data)
+        # 'created_at', 'price', 'username', 'product_name'
+        response = [
+            {
+                "product_name": order["product_name"],
+                "price": order["price"],
+                "username": order["username"],
+                "created_at": f"{order['created_at'].split('T')[0]}",
+            }
+            for order in serializer.data
+        ]
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class TopSoldProductsAPIView(APIView):

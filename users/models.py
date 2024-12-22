@@ -37,6 +37,7 @@ class Order(models.Model):
         TODO = 'to do', 'To Do'
         DOING = 'doing', 'Doing'
         DONE = 'done', 'Done'
+        LATED = 'lated', 'Lated'
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

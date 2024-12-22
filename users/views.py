@@ -201,7 +201,7 @@ class LastOrdersAPIView(APIView):
             {
                 "customer_id": order.customer_id,
                 "product_name": order.product.name,
-                "date": order.created_at.strftime("%d/%m"),
+                "date": f"{order.created_at.day} {order.created_at.strftime('%B')} {order.created_at.year}",
                 "status": order.status
             }
             for order in orders

@@ -27,7 +27,11 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    description = models.TextField()
+    image = models.ImageField(upload_to='products/image/')
+    discount = models.IntegerField()
+    gift = models.BooleanField(default=False)
+    delivery = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

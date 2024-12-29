@@ -2,7 +2,7 @@ from django.urls import path
 
 from users.views import RefreshTokenAPIView, GetUsersAPIView, ProfileAPIView, RegisterAPIView, LoginAPIView, \
     RootAPIView, ProfileUpdateAPIView, ProfilePutAPIView, ChangePasswordAPIView, LastOrdersAPIView, RecentOrdersAPIView, \
-    TopSoldProductsAPIView, BarChartGetAPIView
+    TopSoldProductsAPIView, BarChartGetAPIView, ProductsAPIView, ProductGetUpdateDeleteAPIView
 
 urlpatterns = [
     path('', RootAPIView.as_view()),
@@ -18,4 +18,6 @@ urlpatterns = [
     path('recent-orders/', RecentOrdersAPIView.as_view()),
     path('top-products/', TopSoldProductsAPIView.as_view()),
     path('chart/', BarChartGetAPIView.as_view()),
+    path('products/', ProductsAPIView.as_view()),
+    path('product/crud/<int:pk>', ProductGetUpdateDeleteAPIView.as_view()),
 ]

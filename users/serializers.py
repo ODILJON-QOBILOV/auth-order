@@ -107,3 +107,10 @@ class TopProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'name', 'price', 'total_sold']
+
+
+
+class ProductsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'

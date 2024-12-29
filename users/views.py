@@ -7,12 +7,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User, Order, Product
 from .serializers import RegisterSerializer, LoginSerializer, RefreshTokenSerializer, UserProfileSerializer, \
     UserProfileUpdateSerializer, UserPutPatchSerializer, ChangePasswordSerializer, LastOrdersSerializer, \
-    RecentOrdersSerializer, TopProductSerializer
+    RecentOrdersSerializer, TopProductSerializer, ProductsSerializer
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiExample
+from rest_framework import generics
 
 
 class RootAPIView(APIView):
@@ -257,3 +258,16 @@ class BarChartGetAPIView(APIView):
         db_user = User.objects.get(id=user.id)
         return Response({"data": db_user.statistics})
         # return Response({"message": "you are not authorized"})
+
+@extend_schema(tags=['products'], request=ProductsSerializer)
+class ProductsAPIView(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated, )
+    queryset = Product.objects.all()
+    serializer_class = ProductsSerializer
+
+
+@extend_schema(tags=['products'], request=ProductsSerializer)
+class ProductGetUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated, )
+    queryset = Product.objects.all()
+    serializer_class = ProductsSerializer

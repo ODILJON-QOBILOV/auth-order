@@ -112,11 +112,9 @@ class RefreshTokenAPIView(APIView):
 class GetUsersAPIView(APIView):
     @extend_schema(tags=['users'])
     def get(self, request):
-        if request.user.username == 'admin' or request.user.username == 'mars':
-            users = User.objects.all()
-            user_data = [{"id": user.id,"username": user.username, "email": user.email, "bio": user.bio} for user in users]
-            return Response(user_data)
-        return Response({"error": "You are not authorized as admin."}, status=403)
+        users = User.objects.all()
+        user_data = [{"id": user.id,"username": user.username, "email": user.email, "bio": user.bio} for user in users]
+        return Response(user_data)
 
 class ProfileAPIView(GenericAPIView):
     permission_classes = (IsAuthenticated,)

@@ -5,6 +5,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from users.models import User, Order, Product
 
 
+class UsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("id","username", "email", "bio", "role", "user_image")
+
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 

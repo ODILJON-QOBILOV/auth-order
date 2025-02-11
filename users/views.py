@@ -7,7 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User, Order, Product
 from .serializers import RegisterSerializer, LoginSerializer, RefreshTokenSerializer, UserProfileSerializer, \
     UserProfileUpdateSerializer, UserPutPatchSerializer, ChangePasswordSerializer, LastOrdersSerializer, \
-    RecentOrdersSerializer, TopProductSerializer, ProductsSerializer
+    RecentOrdersSerializer, TopProductSerializer, ProductsSerializer, UsersSerializer
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -109,12 +109,12 @@ class RefreshTokenAPIView(APIView):
             }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class GetUsersAPIView(APIView):
-    @extend_schema(tags=['users'])
-    def get(self, request):
-        users = User.objects.all()
-        user_data = [{"id": user.id,"username": user.username, "email": user.email, "bio": user.bio} for user in users]
-        return Response(user_data)
+
+@extend_schema(tags=['users'])
+class GetUsersAPIView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = UsersSerializer
+    queryset = User.objects.all()
 
 class ProfileAPIView(GenericAPIView):
     permission_classes = (IsAuthenticated,)

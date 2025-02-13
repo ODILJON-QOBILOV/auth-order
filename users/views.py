@@ -269,3 +269,10 @@ class ProductGetUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, )
     queryset = Product.objects.all()
     serializer_class = ProductsSerializer
+
+
+class UserDeleteAPIView(generics.DestroyAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = UsersSerializer
+    queryset = User.objects.all()
+

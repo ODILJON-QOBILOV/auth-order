@@ -2,7 +2,7 @@ from django.urls import path
 
 from users.views import RefreshTokenAPIView, GetUsersAPIView, ProfileAPIView, RegisterAPIView, LoginAPIView, \
     RootAPIView, ProfileUpdateAPIView, ProfilePutAPIView, ChangePasswordAPIView, LastOrdersAPIView, RecentOrdersAPIView, \
-    TopSoldProductsAPIView, BarChartGetAPIView, ProductsAPIView, ProductGetUpdateDeleteAPIView
+    TopSoldProductsAPIView, BarChartGetAPIView, ProductsAPIView, ProductGetUpdateDeleteAPIView, UserDeleteAPIView
 
 urlpatterns = [
     path('', RootAPIView.as_view()),
@@ -14,6 +14,7 @@ urlpatterns = [
     path('profile/update/', ProfileUpdateAPIView.as_view()),
     path('profile/put/', ProfilePutAPIView.as_view()),
     path('change-password/', ChangePasswordAPIView.as_view()),
+    path('user/delete/<int:pk>/', UserDeleteAPIView.as_view()),
     path('last-orders/', LastOrdersAPIView.as_view()),
     path('recent-orders/', RecentOrdersAPIView.as_view()),
     path('top-products/', TopSoldProductsAPIView.as_view()),
